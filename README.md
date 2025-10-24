@@ -1,2 +1,2 @@
-# DS
-Proyecto de Desarrollo Seguro: Equipo Diego, Diego, Leodan, Luis
+# IS
+Proyecto de Ingenieria de software
