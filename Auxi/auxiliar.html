@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menú Principal</title>
+  <!-- Si este documento está en Auxi/, auxiliar.css está en la misma carpeta -->
+  <link rel="stylesheet" href="auxiliar.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <div class="contenedor">
+    <!-- 🔹 Encabezado -->
+    <header>
+      <img src="../img/logo1.png" alt="Logo TecNM" class="logo izquierda" />
+      <h1>Menú Principal</h1>
+      <img src="../img/escudo.png" alt="Escudo" class="logo derecha" />
+    </header>
+
+    <!-- 🔹 Menú principal -->
+    <main>
+      <div class="menu">
+        <!-- Enlaces convertidos a <a>. Si el documento no existe según tu estructura, href="" -->
+        <a class="boton" href="" title="Archivo no encontrado"><i class="fa-solid fa-graduation-cap"></i> Carreras</a>
+
+        <a class="boton" href="" title="Archivo no encontrado"><i class="fa-solid fa-book"></i> Materias</a>
+
+        <!-- Según la estructura que diste, existe Auxi/Usuarios-LAGP/Usuarios.html -->
+        <!-- Si este archivo se abre desde Auxi/auxiliar.html, la ruta relativa es Usuarios-LAGP/Usuarios.html -->
+        <a class="boton" href="Usuarios-LAGP/Usuarios.html" title="Ir a Usuarios"><i class="fa-solid fa-users"></i> Usuarios</a>
+
+        <a class="boton" href="" title="Archivo no encontrado"><i class="fa-solid fa-clipboard-list"></i> Registro de Compra de material</a>
+
+        <a class="boton" href="" title="Archivo no encontrado"><i class="fa-solid fa-boxes-stacked"></i> Material</a>
+
+        <a class="boton" href="" title="Archivo no encontrado"><i class="fa-solid fa-handshake"></i> Préstamos</a>
+
+        <a class="boton" href="" title="Archivo no encontrado"><i class="fa-solid fa-chalkboard-user"></i> Asesorías</a>
+      </div>
+    </main>
+
+    <!-- 🔹 Iconos inferiores -->
+    <footer>
+      <!-- En la estructura que compartiste existe index.html en la raíz -->
+      <!-- Desde Auxi/auxiliar.html la ruta a raíz es ../index.html -->
+      <a class="icono" href="../index.html" title="Inicio"><i class="fa-solid fa-house"></i></a>
+    </footer>
+  </div>
+
+  <!-- NO se incluye JS: petición cumplida (solo HTML) -->
+</body>
+</html>

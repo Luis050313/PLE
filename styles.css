@@ -1,0 +1,170 @@
+/* ===== Fondo con gradiente animado ===== */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(-45deg, #970000, #6f0000, #520000, #990000);
+  background-size: 400% 400%;
+  animation: fondoMovimiento 12s ease infinite;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes fondoMovimiento {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ===== Caja principal de login ===== */
+.login-container {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 35px 30px;
+  border-radius: 20px;
+  text-align: center;
+  width: 360px;
+  max-width: 90%;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+  animation: aparecer 1s ease;
+}
+
+@keyframes aparecer {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* ===== Logos superiores ===== */
+.logos {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.logos img {
+  height: 70px;
+  max-width: 45%;
+  object-fit: contain;
+  transition: transform 0.5s ease;
+}
+
+.logos img:hover {
+  transform: rotateY(15deg) scale(1.1);
+}
+
+/* ===== Logo central ===== */
+.logo-center {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 15px 0;
+}
+
+.logo-center img {
+  height: 100px;
+  width: auto;
+  border-radius: 50%;
+  padding: 4px;
+  background: white;
+  box-shadow: 0 0 18px rgba(128,0,0,0.7);
+  animation: latido 2s infinite, glow 3s infinite alternate;
+}
+
+@keyframes latido {
+  0%, 50%, 100% { transform: scale(1); }
+  25%, 75%      { transform: scale(1.06); }
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 12px rgba(128,0,0,0.5); }
+  to   { box-shadow: 0 0 28px rgba(128,0,0,0.9); }
+}
+
+/* ===== Título ===== */
+h2 {
+  color: #800000;
+  margin-bottom: 20px;
+  font-weight: bold;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+/* ===== Formulario ===== */
+form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.input-container {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.input-container i {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #800000;
+  font-size: 16px;
+}
+
+/* ===== Campos de texto ===== */
+input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1.4;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+input:focus {
+  border-color: #800000;
+  box-shadow: 0 0 10px rgba(128,0,0,0.5);
+  outline: none;
+}
+
+/* ===== Botón ===== */
+button {
+  background: linear-gradient(45deg, #800000, #b00000);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+button:not(:disabled):hover {
+  background: linear-gradient(45deg, #b00000, #ff1a1a);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 5px 18px rgba(128,0,0,0.6);
+}
+
+/* ===== Texto de registro ===== */
+.register-text {
+  margin-top: 18px;
+  text-align: center;
+  color: #333;
+  font-size: 14px;
+}
+
+.register-text a {
+  color: #800000;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.register-text a:hover {
+  color: #ff1a1a;
+  text-decoration: underline;
+}

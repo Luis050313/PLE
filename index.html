@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <title>Laboratorio de Electrónica Analógica</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="mensajes.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div class="login-container">
+    <!-- Logos superiores -->
+    <div class="logos">
+      <img src="img/TECNM.png" alt="TecNM" class="logo-left">
+      <img src="img/escudo.png" alt="Universidad" class="logo-right">
+    </div>
+
+    <!-- Logo central -->
+    <div class="logo-center">
+      <img src="img/Burrito.png" alt="Logo Burro">
+    </div>
+
+    <h2>Laboratorio de Electrónica Analógica</h2>
+
+    <form id="loginForm">
+      <div class="input-container">
+        <i class="fa fa-user"></i>
+        <input type="text" id="usuario" name="usuario" placeholder="Usuario" 
+        maxlength="8"
+        title="El campo de número de control debe ser un número positivo de 4 cifras"
+        inputmode="numeric"
+        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+        required
+        >
+      </div>
+
+      <div class="input-container">
+        <i class="fa fa-lock"></i>
+        <input type="password" id="password" name="password" placeholder="Contraseña" maxlength="50" required>
+      </div>
+
+      <button type="button" onclick="login()">Iniciar sesión</button>
+    </form>
+
+    <div class="register-text">
+      ¿Es tu primera vez? <a href="">Regístrate aquí</a>
+    </div>
+  </div>
+
+  <script src="js/index.js"></script>
+  <script src="js/mensajes.js"></script>
+</body>
+</html>
