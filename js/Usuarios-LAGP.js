@@ -8,25 +8,38 @@ const numeroControl = document.getElementById('numeroControl');
 const nombre = document.getElementById('nombre');
 const paterno = document.getElementById('paterno');
 const materno = document.getElementById('materno');
-//Botón de contraeña
-const CambiarClave = document.getElementById('CambiarClave');
 //Selección de fila
 let fila = null;
+//Listener
+const clave = document.getElementById('clave');
+const input = document.getElementById('inputPass');
+const btn = document.getElementById('buttonPass');
+const span = document.getElementById('spanPass');
+
+btn.addEventListener('click', (e) => {
+  e.preventDefault();
+  const isText = input.type === 'text';
+  input.type = isText ? 'password' : 'text';
+  btn.setAttribute('aria-pressed', String(!isText));
+  btn.title = isText ? 'Mostrar contraseña' : 'Ocultar contraseña';
+});
 
 function alSeleccionar() {
   //Cuando es Auxiliar
   if(ComboTipoRegistro.value === '1'){
+    clave.style.display = 'flex';
+    span.style.display = 'block';
     //Cambia el número de carácteres
     numeroControl.value = '';
     numeroControl.setAttribute('maxlength', 4);
-    CambiarClave.style.display = 'flex';
   }
   //Cuando es Alumno
   if (ComboTipoRegistro.value === '2') { 
 
     comboCarreras.style.display = 'block';
     spanCarreras.style.display = 'block';
-    CambiarClave.style.display = 'flex';
+    clave.style.display = 'flex';
+    span.style.display = 'block';
 
     //Cambia el número de carácteres
     numeroControl.value = '';
@@ -54,10 +67,11 @@ function alSeleccionar() {
   }
   //Cuando es Docente
   if(ComboTipoRegistro.value === '3'){
+    clave.style.display = 'none';
+    span.style.display = 'none';
     //Cambia el número de carácteres
     numeroControl.value = '';
     numeroControl.setAttribute('maxlength', 4);
-    CambiarClave.style.display = 'none';
   }
   //Llenar la tabla
   desplegarTabla();
@@ -282,57 +296,6 @@ function eliminar() {
         desplegarTabla(); // recarga la tabla
     })
     .catch(error => console.error("Error:", error));
-}
-
-function cambiarClave() {
-    if (!fila) {
-        alert("⚠️ Selecciona primero un elemento de la tabla.");
-        return;
-    }
-
-    // Solicitar autorización del auxiliar
-    const auxNC = prompt("Número de control del auxiliar que autoriza:");
-    const auxClave = prompt("Contraseña del auxiliar:");
-
-    if (!auxNC || !auxClave) {
-        alert("⚠️ Proceso cancelado");
-        return;
-    }
-
-    // Validar auxiliar en backend
-    fetch("../../php/Usuarios-LAGP/ValidarAuxiliar.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "numeroControl=" + encodeURIComponent(auxNC) +
-              "&clave=" + encodeURIComponent(auxClave)
-    })
-    .then(res => res.text())
-    .then(res => {
-        if(res !== "OK") {
-            alert("❌ Autorización inválida: " + res);
-            return;
-        }
-
-        // Solicitar nueva contraseña
-        const nuevaClave = prompt("Ingresa la nueva contraseña del usuario " + numeroControl.value + " :");
-        if(!nuevaClave || nuevaClave.length < 4) {
-            alert("❌ Contraseña inválida");
-            return;
-        }
-
-        // Llamar a PHP para insertar o actualizar
-        fetch("../../php/Usuarios-LAGP/CambiarClave.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: "numeroControl=" + encodeURIComponent(numeroControl.value) +
-                  "&clave=" + encodeURIComponent(nuevaClave)
-        })
-        .then(r => r.text())
-        .then(mensaje => alert(mensaje))
-        .catch(err => console.error("Error:", err));
-
-    })
-    .catch(err => console.error("Error:", err));
 }
 
 //Se ejecuta al cargar el html
