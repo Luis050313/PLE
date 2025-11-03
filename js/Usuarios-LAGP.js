@@ -3,35 +3,59 @@
 const ComboTipoRegistro = document.getElementById('ComboTipoRegistro');
 const comboCarreras = document.getElementById('comboCarreras');
 const spanCarreras = document.getElementById('spanCarreras');
+
 //Validar
 const numeroControl = document.getElementById('numeroControl');
 const nombre = document.getElementById('nombre');
 const paterno = document.getElementById('paterno');
 const materno = document.getElementById('materno');
-//Selección de fila
-let fila = null;
+
 //Listener
 const clave = document.getElementById('clave');
-const input = document.getElementById('inputPass');
+const contraseña = document.getElementById('inputPass');
 const btn = document.getElementById('buttonPass');
 const span = document.getElementById('spanPass');
+
 //Botones
 const btnGuardar = document.getElementById('Guardar');
 const btnModificar = document.getElementById('Modificar');
 const btnEliminar = document.getElementById('Eliminar');
+const btnCancelar = document.getElementById('Cancelar');
+btnCancelar.style.display = 'none';
+
 //Activar boton al guardar
-[numeroControl, nombre, paterno, materno, input]
+[numeroControl, nombre, paterno, materno, contraseña]
   .forEach(elemento => {
     elemento.addEventListener('input', validar);
   });
 comboCarreras.addEventListener('change', validar);
+
 //Password
 btn.addEventListener('click', (e) => {
   e.preventDefault();
-  const isText = input.type === 'text';
-  input.type = isText ? 'password' : 'text';
+  const isText = contraseña.type === 'text';
+  contraseña.type = isText ? 'password' : 'text';
   btn.setAttribute('aria-pressed', String(!isText));
   btn.title = isText ? 'Mostrar contraseña' : 'Ocultar contraseña';
+});
+
+//Selección de fila
+let fila = null;
+let seleccionado = false;
+function alModificar(){
+  btnModificar.disabled = true;
+  if(seleccionado && validar()){
+    btnModificar.disabled = false;
+  }
+  btnCancelar.style.display = 'block';
+}
+[numeroControl, nombre, paterno, materno, contraseña].forEach(elemento => { //Conjunto de acciones que ocurren al querer modificar Campos
+    elemento.addEventListener('input', () => {
+      alModificar();
+    });
+});
+comboCarreras.addEventListener('change', ()=>{ //Conjunto de acciones que ocurren al querer modificar Combobox
+  alModificar();
 });
 
 function alSeleccionar() {
@@ -122,6 +146,10 @@ function desplegarTabla(){
                         paterno.value = persona.apellidoPaterno;
                         materno.value = persona.apellidoMaterno;
                         buscarCarrera(persona.id);
+                        //Modificar o Eliminar
+                        seleccionado = true;
+                        btnModificar.disabled = true;
+                        numeroControl.readOnly = true;
                     });
 
                     tbody.appendChild(tr);
@@ -154,24 +182,19 @@ function validar(){
     return false;
   }
 
-  if(nombre.checkValidity()){
-      if(paterno.checkValidity()){
-        if(materno.checkValidity()){
-          if(ComboTipoRegistro.value === '3' || input.value !== ''){
-            console.log("Formulario común correcto");
-            //Activar botón guardar
-            btnGuardar.disabled = false;
-            return true;
-          }
-        }else{
-          return false;
-        }
-      }else{
-        return false;
-      }
-    }else{
-      return false;
-    }
+  if(nombre.checkValidity()){}  else{ return false; }
+  if(paterno.checkValidity()){} else{ return false; }
+  if(materno.checkValidity()){} else{ return false; }
+  //Para reusar el método con la función modificar
+  if(seleccionado){
+    return true;
+  }
+  if(ComboTipoRegistro.value === '3' || contraseña.value !== ''){
+    console.log("Formulario común correcto");
+    //Activar botón guardar
+    btnGuardar.disabled = false;
+    return true;
+  }
 }
 
 function buscarCarrera(numeroControl) {
@@ -201,7 +224,7 @@ function guardar(){
   const lastname = paterno.value.trim();
   const lastname2 = materno.value.trim();
   const career = comboCarreras.value.trim();
-  const password = input.value.trim();
+  const password = contraseña.value.trim();
 
   fetch("../../php/Usuarios-LAGP/Guardar.php", {
       method: "POST",
@@ -226,22 +249,13 @@ function guardar(){
 }
 
 function modificar() {
-  if (!fila) {
-    alert("⚠️ Selecciona primero una fila para modificar.");
-    return;
-  }
-
-  // Validar los datos antes de enviarlos
-  if (!validar()) {
-    return;
-  }
-
   const ncontrol = numeroControl.value.trim();
   const name = nombre.value.trim();
   const lastname = paterno.value.trim();
   const lastname2 = materno.value.trim();
   const career = comboCarreras.value.trim();
   const tipo = ComboTipoRegistro.value;
+  const pass = contraseña.value.trim();
 
   fetch("../../php/Usuarios-LAGP/Modificar.php", {
     method: "POST",
@@ -252,11 +266,12 @@ function modificar() {
       "&nombre=" + encodeURIComponent(name) +
       "&apellidoPaterno=" + encodeURIComponent(lastname) +
       "&apellidoMaterno=" + encodeURIComponent(lastname2) +
-      "&carrera=" + encodeURIComponent(career)
+      "&carrera=" + encodeURIComponent(career) +
+      "&clave=" + encodeURIComponent(pass)
   })
     .then(response => response.text())
     .then(data => {
-      alert(data);
+      mostrarMensaje(data);
       // Limpiar campos después de modificar
       limpiarCampos();
       fila = null;
@@ -266,8 +281,19 @@ function modificar() {
     })
     .catch(error => {
       console.error("Error al modificar:", error);
-      alert("❌ Ocurrió un error al intentar modificar.");
+      mostrarMensaje("❌ Ocurrió un error al intentar modificar.");
     });
+    //Regresar al modo normal
+    detenerModificar();
+}
+
+function detenerModificar(){
+  //Regresar al modo normal
+    btnModificar.disabled = true;
+    seleccionado = false;
+    numeroControl.readOnly = false;
+    btnCancelar.style.display = 'none';
+    limpiarCampos();
 }
 
 function eliminar() {
@@ -303,7 +329,7 @@ function limpiarCampos(){
   paterno.value = '';
   materno.value = '';
   comboCarreras.value = '';
-  input.value = '';
+  contraseña.value = '';
 }
 
 function desactivarBotones(){
