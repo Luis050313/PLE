@@ -94,6 +94,11 @@ button:hover{
     background: linear-gradient(to right, #e10000, #ac0101);
     box-shadow: 0 8px 20px rgba(122, 0, 0, 0.6);
 }
+button:disabled{
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
 .icono{
     height: 40%;
 }

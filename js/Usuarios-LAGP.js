@@ -15,7 +15,17 @@ const clave = document.getElementById('clave');
 const input = document.getElementById('inputPass');
 const btn = document.getElementById('buttonPass');
 const span = document.getElementById('spanPass');
-
+//Botones
+const btnGuardar = document.getElementById('Guardar');
+const btnModificar = document.getElementById('Modificar');
+const btnEliminar = document.getElementById('Eliminar');
+//Activar boton al guardar
+[numeroControl, nombre, paterno, materno, input]
+  .forEach(elemento => {
+    elemento.addEventListener('input', validar);
+  });
+comboCarreras.addEventListener('change', validar);
+//Password
 btn.addEventListener('click', (e) => {
   e.preventDefault();
   const isText = input.type === 'text';
@@ -25,6 +35,10 @@ btn.addEventListener('click', (e) => {
 });
 
 function alSeleccionar() {
+  //Deshabilitar botones
+  desactivarBotones();
+  //Limpiar campos
+  limpiarCampos();
   //Cuando es Auxiliar
   if(ComboTipoRegistro.value === '1'){
     clave.style.display = 'flex';
@@ -124,6 +138,8 @@ function desplegarTabla(){
 }
 
 function validar(){
+  //Desactivar botón Guardar
+  btnGuardar.disabled = true;
   //Validar campos
   if(ComboTipoRegistro.value !== '2' && numeroControl.value.length === 4){
     console.log("Es docente o auxiliar con NC correcto");
@@ -132,29 +148,28 @@ function validar(){
     if(comboCarreras.value !== ''){
       console.log('Todo correcto');
     }else{
-      mostrarMensaje("❌ Selecciona una opción de la lista","error");
       return false;
     }
   }else{
-    alert("❌ Para Alumnos el Número de control es de 8 cifras, mientras que para Auxiliar y Docentes es de 4 cifras");
     return false;
   }
 
   if(nombre.checkValidity()){
       if(paterno.checkValidity()){
         if(materno.checkValidity()){
-          console.log("Formulario común correcto");
-          return true;
+          if(ComboTipoRegistro.value === '3' || input.value !== ''){
+            console.log("Formulario común correcto");
+            //Activar botón guardar
+            btnGuardar.disabled = false;
+            return true;
+          }
         }else{
-          alert("❌ Valor inválido: " + materno.title);
           return false;
         }
       }else{
-        alert("❌ Valor inválido: " + paterno.title);
         return false;
       }
     }else{
-      alert("❌ Valor inválido: " + nombre.title);
       return false;
     }
 }
@@ -180,17 +195,13 @@ function buscarCarrera(numeroControl) {
 }
 
 function guardar(){
-  //Validar datos antes de guardarlos
-  if(!validar()){
-    return;
-  }
-
   //Ya validados guardarlos en variables
   const ncontrol = numeroControl.value.trim();
   const name = nombre.value.trim();
   const lastname = paterno.value.trim();
   const lastname2 = materno.value.trim();
   const career = comboCarreras.value.trim();
+  const password = input.value.trim();
 
   fetch("../../php/Usuarios-LAGP/Guardar.php", {
       method: "POST",
@@ -200,18 +211,15 @@ function guardar(){
             "&nombre=" + encodeURIComponent(name) + 
             "&apellidoPaterno=" + encodeURIComponent(lastname) + 
             "&apellidoMaterno=" + encodeURIComponent(lastname2) + 
-            "&carrera=" + encodeURIComponent(career)
+            "&carrera=" + encodeURIComponent(career)+
+            "&clave=" + encodeURIComponent(password)
   })
   .then(response => response.text())
   .then(data => {
-      alert(data);
+      mostrarMensaje(data);
       //Limpiar campos
-      numeroControl.value = '';
-      nombre.value = '';
-      paterno.value = '';
-      materno.value = '';
-      comboCarreras.value = '';
-
+      limpiarCampos();
+      desactivarBotones();
       desplegarTabla(); //Recarga la tabla automáticamente
   })
   .catch(error => console.error("Error:", error));  
@@ -250,11 +258,7 @@ function modificar() {
     .then(data => {
       alert(data);
       // Limpiar campos después de modificar
-      numeroControl.value = "";
-      nombre.value = "";
-      paterno.value = "";
-      materno.value = "";
-      comboCarreras.value = "";
+      limpiarCampos();
       fila = null;
 
       // Recargar la tabla
@@ -285,12 +289,7 @@ function eliminar() {
     .then(data => {
         alert(data);
 
-        // Limpiar campos
-        numeroControl.value = '';
-        nombre.value = '';
-        paterno.value = '';
-        materno.value = '';
-        comboCarreras.value = '';
+        limpiarCampos();
 
         fila = null;
         desplegarTabla(); // recarga la tabla
@@ -298,5 +297,21 @@ function eliminar() {
     .catch(error => console.error("Error:", error));
 }
 
+function limpiarCampos(){
+  numeroControl.value = '';
+  nombre.value = '';
+  paterno.value = '';
+  materno.value = '';
+  comboCarreras.value = '';
+  input.value = '';
+}
+
+function desactivarBotones(){
+  btnGuardar.disabled = true;
+  btnEliminar.disabled = true;
+  btnModificar.disabled = true;
+}
+
 //Se ejecuta al cargar el html
+desactivarBotones();
 window.onload = desplegarTabla;

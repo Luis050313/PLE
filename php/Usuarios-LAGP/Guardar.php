@@ -7,49 +7,25 @@ $nombre          = $conn->real_escape_string($_POST['nombre'] ?? '');
 $apellidoPaterno = $conn->real_escape_string($_POST['apellidoPaterno'] ?? '');
 $apellidoMaterno = $conn->real_escape_string($_POST['apellidoMaterno'] ?? '');
 $carrera         = $conn->real_escape_string($_POST['carrera'] ?? '');
-
-// Determinar tabla y columna según tipo
-if($id == 1 || $id == 2){ // Auxiliar o Alumno
-    $tabla = "personas";
-    $columna = "numeroControl";
-} elseif($id == 3){ // Profesor
-    $tabla = "profesores";
-    $columna = "id_Profesor";
-} else {
-    echo "❌ Tipo de registro inválido";
-    exit;
-}
+$clave           = $conn->real_escape_string($_POST['clave'] ?? '');
 
 // Verificar si ya existe
-$check = $conn->query("SELECT * FROM $tabla WHERE $columna = '$numeroControl'");
+$check = $conn->query("SELECT 1 FROM personas WHERE numeroControl = '$numeroControl' UNION 
+                       SELECT 2 FROM profesores WHERE id_profesor = '$numeroControl' ");
 
-if($check->num_rows > 0){
-    // Existe → Update
-    $update = "UPDATE $tabla SET 
-                nombre='$nombre', 
-                apellidoPaterno='$apellidoPaterno', 
-                apellidoMaterno='$apellidoMaterno', 
-                id_Estado=1
-               WHERE $columna='$numeroControl'";
-    try{
-        $conn->query($update);
-
-        // Si es alumno, actualizar carrera
-        if($id == 2){
-            $conn->query("REPLACE INTO CarrerasAlumnos (numeroControl, id_Carrera) VALUES ('$numeroControl','$carrera')");
-        }
-
-        echo "Registro actualizado correctamente ✅";
-    } catch (mysqli_sql_exception $e){
-        echo "⚠️ Error al actualizar: " . $e->getMessage();
-    }
-
-} else {
+if($check->num_rows === 0){
     // No existe → Insert
     try{
         if($id == 1 || $id == 2){ // Auxiliar o Alumno
             $conn->query("INSERT INTO personas (numeroControl, id_Rol, id_Estado, nombre, apellidoPaterno, apellidoMaterno)
                          VALUES ('$numeroControl','$id',1,'$nombre','$apellidoPaterno','$apellidoMaterno')");
+            
+            //Clave encriptada
+            $hash = password_hash($clave, PASSWORD_DEFAULT);
+            $stmt = $conn->prepare("INSERT INTO usuarios (id_Estado, numeroControl, Clave) VALUES ('1',?,?)");
+            $stmt->bind_param("is", $numeroControl, $hash); // El primer parámetro es numérico (i), el segundo string (s)
+            $stmt->execute();
+
             if($id == 2){
                 $conn->query("INSERT INTO CarrerasAlumnos (numeroControl, id_Carrera) VALUES ('$numeroControl','$carrera')");
             }
@@ -58,11 +34,13 @@ if($check->num_rows > 0){
                          VALUES ('$numeroControl',1,'$nombre','$apellidoPaterno','$apellidoMaterno')");
         }
 
-        echo "Registro guardado correctamente ✅";
+        echo "Guardado correctamente ✅";
 
     } catch (mysqli_sql_exception $e){
         echo "⚠️ Error al guardar: " . $e->getMessage();
     }
+}else{
+    echo "El usuario ya existe ❌";
 }
 
 $conn->close();
