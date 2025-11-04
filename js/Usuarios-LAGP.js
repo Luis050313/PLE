@@ -42,12 +42,13 @@ btn.addEventListener('click', (e) => {
 //Selección de fila
 let fila = null;
 let seleccionado = false;
+
 function alModificar(){
   btnModificar.disabled = true;
   if(seleccionado && validar()){
     btnModificar.disabled = false;
+    btnEliminar.disabled = true;
   }
-  btnCancelar.style.display = 'block';
 }
 [numeroControl, nombre, paterno, materno, contraseña].forEach(elemento => { //Conjunto de acciones que ocurren al querer modificar Campos
     elemento.addEventListener('input', () => {
@@ -63,6 +64,8 @@ function alSeleccionar() {
   desactivarBotones();
   //Limpiar campos
   limpiarCampos();
+  //Cancelar una modificación
+  detenerProceso();
   //Cuando es Auxiliar
   if(ComboTipoRegistro.value === '1'){
     clave.style.display = 'flex';
@@ -150,6 +153,8 @@ function desplegarTabla(){
                         seleccionado = true;
                         btnModificar.disabled = true;
                         numeroControl.readOnly = true;
+                        btnEliminar.disabled = false;
+                        btnCancelar.style.display = 'block';
                     });
 
                     tbody.appendChild(tr);
@@ -284,27 +289,21 @@ function modificar() {
       mostrarMensaje("❌ Ocurrió un error al intentar modificar.");
     });
     //Regresar al modo normal
-    detenerModificar();
+    detenerProceso();
 }
 
-function detenerModificar(){
+function detenerProceso(){
   //Regresar al modo normal
     btnModificar.disabled = true;
     seleccionado = false;
     numeroControl.readOnly = false;
     btnCancelar.style.display = 'none';
+    btnEliminar.disabled = true;
+    fila = null;
     limpiarCampos();
 }
 
 function eliminar() {
-    if (!fila) {
-        alert("⚠️ Selecciona primero un elemento de la tabla para eliminar");
-        return;
-    }
-
-    // Confirmación de borrado lógico
-    if (!confirm("¿Seguro que deseas eliminar (cambio de estado) este registro?")) return;
-
     fetch("../../php/Usuarios-LAGP/Eliminar.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -313,7 +312,7 @@ function eliminar() {
     })
     .then(response => response.text())
     .then(data => {
-        alert(data);
+        mostrarMensaje(data);
 
         limpiarCampos();
 
@@ -321,6 +320,8 @@ function eliminar() {
         desplegarTabla(); // recarga la tabla
     })
     .catch(error => console.error("Error:", error));
+    //Regresar al modo normal
+    detenerProceso();
 }
 
 function limpiarCampos(){

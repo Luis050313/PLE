@@ -40,7 +40,8 @@ if($check->num_rows === 0){
         echo "⚠️ Error al guardar: " . $e->getMessage();
     }
 }else{
-    echo "El usuario ya existe ❌";
+    //Si ya existe se modifican y se activa el usuario de nuevo
+    include("modificar.php");
 }
 
 $conn->close();

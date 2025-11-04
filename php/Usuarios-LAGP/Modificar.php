@@ -12,13 +12,13 @@ $clave           = $conn->real_escape_string($_POST['clave'] ?? '');
 if ($id == 1) { // AUXILIAR
     try{
         $update = "UPDATE Personas 
-                SET nombre='$nombre', apellidoPaterno='$apellidoPaterno', apellidoMaterno='$apellidoMaterno'
-                WHERE numeroControl='$numeroControl' AND id_Rol=$id";
+                   SET nombre='$nombre', apellidoPaterno='$apellidoPaterno', apellidoMaterno='$apellidoMaterno', id_estado = '1'
+                   WHERE numeroControl='$numeroControl' AND id_Rol=$id";
         $conn->query($update);
         //Usuarios
         if($clave !== ''){
             $hash = password_hash($clave, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("UPDATE Usuarios SET clave=? WHERE numeroControl=?");
+            $stmt = $conn->prepare("UPDATE Usuarios SET id_estado = '1', clave=? WHERE numeroControl=?");
             $stmt->bind_param("si", $hash, $numeroControl); // El primer parámetro es numérico (i), el segundo string (s)
             $stmt->execute();
         }
@@ -30,18 +30,18 @@ if ($id == 1) { // AUXILIAR
 } elseif ($id == 2) { // ALUMNO
     try {
         $updatePersona = "UPDATE Personas 
-                        SET nombre='$nombre', apellidoPaterno='$apellidoPaterno', apellidoMaterno='$apellidoMaterno'
-                        WHERE numeroControl='$numeroControl' AND id_Rol=$id";
+                          SET nombre='$nombre', apellidoPaterno='$apellidoPaterno', apellidoMaterno='$apellidoMaterno', id_estado = '1'
+                          WHERE numeroControl='$numeroControl' AND id_Rol=$id";
         $updateCarrera = "UPDATE CarrerasAlumnos 
-                        SET id_Carrera='$carrera'
-                        WHERE numeroControl='$numeroControl'";
+                          SET id_Carrera='$carrera'
+                          WHERE numeroControl='$numeroControl'";
 
         $conn->query($updatePersona);
         $conn->query($updateCarrera);
         //Usuarios
         if($clave !== ''){
             $hash = password_hash($clave, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("UPDATE Usuarios SET clave=? WHERE numeroControl=?");
+            $stmt = $conn->prepare("UPDATE Usuarios SET id_estado = '1', clave=? WHERE numeroControl=?");
             $stmt->bind_param("si", $hash, $numeroControl); // El primer parámetro es numérico (i), el segundo string (s)
             $stmt->execute();
         }
@@ -52,7 +52,7 @@ if ($id == 1) { // AUXILIAR
 
 } elseif ($id == 3) { // PROFESOR
     $update = "UPDATE Profesores 
-               SET nombre='$nombre', apellidoPaterno='$apellidoPaterno', apellidoMaterno='$apellidoMaterno'
+               SET nombre='$nombre', apellidoPaterno='$apellidoPaterno', apellidoMaterno='$apellidoMaterno', id_estado = '1'
                WHERE id_Profesor='$numeroControl'";
     if ($conn->query($update)) {
         echo "✅ Profesor modificado correctamente.";
