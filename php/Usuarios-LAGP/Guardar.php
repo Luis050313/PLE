@@ -39,10 +39,10 @@ if($check->num_rows === 0){
     } catch (mysqli_sql_exception $e){
         echo "⚠️ Error al guardar: " . $e->getMessage();
     }
+    $conn->close();
 }else{
+    echo "⚠️ Advertencia Usuario Duplicado ->" ;
     //Si ya existe se modifican y se activa el usuario de nuevo
     include("modificar.php");
 }
-
-$conn->close();
 ?>
