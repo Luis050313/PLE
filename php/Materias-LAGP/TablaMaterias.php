@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json'); // Le decimos que devolverá JSON
-include("../Conexion-LAGP.php"); // Archivo donde se conecta a la BD
+include("../conexion.php"); // Archivo donde se conecta a la BD
 
 $sql = "SELECT nombre FROM materias";
 $result = $conn->query($sql);

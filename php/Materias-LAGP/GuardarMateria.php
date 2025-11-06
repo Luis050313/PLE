@@ -1,5 +1,5 @@
 <?php
-include("../Conexion-LAGP.php"); // Conexión a la BD
+include("../conexion.php"); // Conexión a la BD
 
     /*_POST['nombre'] → obtiene el valor enviado desde un formulario con method="POST".
     Ejemplo: <input name="nombre" ...>

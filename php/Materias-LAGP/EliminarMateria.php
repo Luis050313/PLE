@@ -1,5 +1,5 @@
 <?php
-include("../Conexion-LAGP.php"); // Conexión a la BD
+include("../conexion.php"); // Conexión a la BD
 
 if (isset($_POST['nombreOriginal'])) {
     $nombreOriginal = trim($_POST['nombreOriginal']);

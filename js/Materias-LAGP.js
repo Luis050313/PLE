@@ -1,7 +1,7 @@
 let nombreOriginal = null; // Guardaremos el nombre actual de la fila seleccionada
 // Cargar Tabla
 function cargarMaterias() {
-    fetch('../../../backend/Materias-LAGP/TablaMaterias.php')
+    fetch('../../php/Materias-LAGP/TablaMaterias.php')
         .then(response => response.json())
         .then(data => {
             const tbody = document.querySelector('#tablaDinamica tbody');
@@ -41,7 +41,7 @@ function guardarMateria() {
         return;
     }
 
-    fetch("../../../backend/Materias-LAGP/GuardarMateria.php", {
+    fetch("../../php/Materias-LAGP/GuardarMateria.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "nombre=" + encodeURIComponent(valor)
@@ -70,7 +70,7 @@ function modificarMateria() {
         return;
     }
 
-    fetch("../../../backend/Materias-LAGP/ModificarMateria.php", {
+    fetch("../../php/Materias-LAGP/ModificarMateria.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "nombreOriginal=" + encodeURIComponent(nombreOriginal) +
@@ -95,7 +95,7 @@ function eliminarMateria() {
 
     const input = document.getElementById("nombreMateria");
     
-    fetch("../../../backend/Materias-LAGP/EliminarMateria.php", {
+    fetch("../../php/Materias-LAGP/EliminarMateria.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "nombreOriginal=" + encodeURIComponent(nombreOriginal)

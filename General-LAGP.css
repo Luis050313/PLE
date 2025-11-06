@@ -146,32 +146,37 @@ footer{
     justify-content: flex-end; 
     align-items: center;
     gap: 0.5rem; 
-    height: 2.6rem;
-    padding-right: 3rem;
+    height: 3rem;
     margin: 1rem;
+    padding-right: 2.8rem;
 }
-footer a {
-  background-color: #ffffff;      /* Fondo blanco */
-  border-radius: 12px;            /* Bordes redondeados */
-  display: flex;                  /* Centra el SVG dentro */
-  align-items: center;            
+footer button {
+  background: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  height: 100%;                   /* Ocupa toda la altura del footer */
-  aspect-ratio: 1 / 1;            /* Hace que sea cuadrado */
-  text-decoration: none;          /* Quita subrayado */
-  transition: all 0.4s ease; /* transición lenta y suave */
+  height: 3rem;
+  width: 3rem;
+  transition: all 0.4s ease;
+  padding: 0;
 }
 
-footer a:hover {
-  transform: translateY(-3px); /* Efecto de subir */
+footer button:hover {
+    background: #ffffff;
 }
 
-footer .icono path {
-  fill: #7a0000;                 /* Color inicial */
+footer button svg {
+  width: 60%;
+}
+
+footer button svg path {
+  fill: #7a0000;
   transition: fill 0.3s;
 }
 
-footer a:hover .icono path {
-  fill: #b30000;                 /* Color menos rojo al pasar el mouse */
+footer button:hover svg path {
+  fill: rgb(214, 16, 16);
 }
+
 
