@@ -339,6 +339,25 @@ function desactivarBotones(){
   btnModificar.disabled = true;
 }
 
+function hayProgreso(){
+  if(numeroControl.value !== '' || nombre.value !== '' || paterno.value !== '' || materno.value !== '' || comboCarreras.value !== '' || contraseña.value !== ''){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function salir(){
+  if(hayProgreso()){
+    mostrarConfirmacion('Tienes datos sin guardar en el formulario. Si sales ahora perderás datos. ¿Deseas salir igualmente?', 
+                        function() { location.href = "../auxiliar.html"; }
+    );
+  }else{
+    location.href = "../auxiliar.html";
+  }
+}
+
 //Se ejecuta al cargar el html
+limpiarCampos();
 desactivarBotones();
 window.onload = desplegarTabla;
