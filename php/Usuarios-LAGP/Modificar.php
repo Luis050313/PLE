@@ -22,7 +22,7 @@ if ($id == 1) { // AUXILIAR
             $stmt->bind_param("si", $hash, $numeroControl); // El primer parámetro es numérico (i), el segundo string (s)
             $stmt->execute();
         }
-        echo "✅ Proceso terminado";
+        echo "✅ Proceso terminado ";
 
     }catch(Exception $e){
         echo "❌ Error al modificar Auxiliar: ";
@@ -45,7 +45,7 @@ if ($id == 1) { // AUXILIAR
             $stmt->bind_param("si", $hash, $numeroControl); // El primer parámetro es numérico (i), el segundo string (s)
             $stmt->execute();
         }
-        echo "✅ Proceso terminado";
+        echo "✅ Proceso terminado ";
     } catch (Exception $e) {
         echo "❌ Error al modificar alumno: ";
     }
@@ -55,7 +55,7 @@ if ($id == 1) { // AUXILIAR
                SET nombre='$nombre', apellidoPaterno='$apellidoPaterno', apellidoMaterno='$apellidoMaterno', id_estado = '1'
                WHERE id_Profesor='$numeroControl'";
     if ($conn->query($update)) {
-        echo "✅ Proceso terminado";
+        echo "✅ Proceso terminado ";
     } else {
         echo "❌ Error al modificar el profesor.";
     }
