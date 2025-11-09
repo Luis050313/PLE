@@ -12,7 +12,7 @@ $numeroControl = $_POST['usuario'];
 $password = $_POST['password'];
 
 // Preparar consulta segura
-$stmt = $conn->prepare("SELECT Clave FROM Usuarios WHERE numeroControl = ?");
+$stmt = $conn->prepare("SELECT Clave FROM Usuarios WHERE numeroControl = ? and id_estado = 1");
 $stmt->bind_param("i", $numeroControl);
 $stmt->execute();
 $result = $stmt->get_result();
