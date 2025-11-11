@@ -1,5 +1,69 @@
-let nombreOriginal = null; // Guardaremos el nombre actual de la fila seleccionada
-// Cargar Tabla
+//Botones
+const btnGuardar = document.getElementById("Guardar");
+    btnGuardar.addEventListener("click", guardarMateria);
+const btnModificar = document.getElementById("Modificar");
+    btnModificar.addEventListener("click", modificarMateria);
+const btnEliminar = document.getElementById("Eliminar");
+    btnEliminar.addEventListener("click", eliminarMateria);
+const btnCancelar = document.getElementById('Cancelar');
+    btnCancelar.addEventListener("click", detenerProceso);
+    btnCancelar.style.display = 'none';
+//Input
+const nombreMateria = document.getElementById("nombreMateria");
+    nombreMateria.addEventListener("input", validar);
+//Variables
+let nombreOriginal = null;
+let fila = null;
+let seleccionado = false;
+
+function validar(){
+  //Desactivar botón Guardar
+  btnGuardar.disabled = true;
+  btnModificar.disabled = true;
+  if(!nombreMateria.checkValidity()){ return false;} 
+  //Para reusar el método con la función modificar
+  if(seleccionado){
+    btnModificar.disabled = false;
+    btnEliminar.disabled = true;
+    return true;
+  }
+  btnGuardar.disabled = false;
+}
+
+function detenerProceso(){
+  //Regresar al modo normal
+    btnModificar.disabled = true;
+    seleccionado = false;
+    btnCancelar.style.display = 'none';
+    btnEliminar.disabled = true;
+    fila = null;
+    nombreMateria.value = '';
+}
+
+function desactivarBotones(){
+  btnGuardar.disabled = true;
+  btnEliminar.disabled = true;
+  btnModificar.disabled = true;
+}
+
+function hayProgreso(){
+  if(nombreMateria.value !== ''){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function salir(){
+  if(hayProgreso()){
+    mostrarConfirmacion('Tienes datos sin guardar en el formulario. Si sales ahora perderás datos. ¿Deseas salir igualmente?', 
+                        function() { location.href = "../auxiliar.html"; }
+    );
+  }else{
+    location.href = "../auxiliar.html";
+  }
+}
+
 function cargarMaterias() {
     fetch('../../php/Materias-LAGP/TablaMaterias.php')
         .then(response => response.json())
@@ -15,7 +79,12 @@ function cargarMaterias() {
                     // Para modificar el elemento
                     fila.addEventListener("click", () => {
                         nombreOriginal = materia.nombre; // Guardamos el nombre actual
-                        document.getElementById("nombreMateria").value = materia.nombre; // cargamos input
+                        nombreMateria.value = materia.nombre; // cargamos input
+                        //Modificar o Eliminar
+                        seleccionado = true;
+                        btnModificar.disabled = true;
+                        btnEliminar.disabled = false;
+                        btnCancelar.style.display = 'block';
                     });
                     
                     tbody.appendChild(fila);
@@ -33,13 +102,7 @@ function cargarMaterias() {
 
 // --- Guardar nueva materia ---
 function guardarMateria() {
-    const input = document.getElementById("nombreMateria");
-    const valor = input.value.trim(); //Guarda el contenido en una variable y quita espacios al principio y final
-
-    if (valor === "") {
-        alert("El campo no puede estar vacío");
-        return;
-    }
+    const valor = nombreMateria.value.trim(); //Guarda el contenido en una variable y quita espacios al principio y final
 
     fetch("../../php/Materias-LAGP/GuardarMateria.php", {
         method: "POST",
@@ -48,8 +111,9 @@ function guardarMateria() {
     })
     .then(response => response.text())
     .then(data => {
-        alert(data);
-        input.value = "";
+        mostrarMensaje(data);
+        nombreMateria.value = "";
+        desactivarBotones();
         cargarMaterias(); // recarga la tabla automáticamente
     })
     .catch(error => console.error("Error:", error));
@@ -57,18 +121,8 @@ function guardarMateria() {
 
 // --- Modificar materia ---
 function modificarMateria() {
-    if (!nombreOriginal) {
-        alert("Selecciona primero una materia de la tabla");
-        return;
-    }
 
-    const input = document.getElementById("nombreMateria");
-    const nuevoNombre = input.value.trim();
-
-    if (nuevoNombre === "") {
-        alert("El campo no puede estar vacío");
-        return;
-    }
+    const nuevoNombre = nombreMateria.value.trim();
 
     fetch("../../php/Materias-LAGP/ModificarMateria.php", {
         method: "POST",
@@ -78,22 +132,17 @@ function modificarMateria() {
     })
     .then(response => response.text())
     .then(data => {
-        alert(data);
-        input.value = "";
+        mostrarMensaje(data);
+        nombreMateria.value = "";
         nombreOriginal = null; // Limpiamos selección
         cargarMaterias();
     })
     .catch(error => console.error("Error:", error));
+    detenerProceso();
 }
 
 // ---Eliminar Materia ---
 function eliminarMateria() {
-    if (!nombreOriginal) {
-        alert("Selecciona primero una materia de la tabla");
-        return;
-    }
-
-    const input = document.getElementById("nombreMateria");
     
     fetch("../../php/Materias-LAGP/EliminarMateria.php", {
         method: "POST",
@@ -102,23 +151,16 @@ function eliminarMateria() {
     })
     .then(response => response.text())
     .then(data => {
-        alert(data);
-        input.value = "";
+        mostrarMensaje(data);
+        nombreMateria.value = "";
         nombreOriginal = null; // Limpiamos selección
         cargarMaterias();
     })
     .catch(error => console.error("Error:", error));
+    detenerProceso();
 }
 
-//Variables
-const btn = document.getElementById("Guardar");
-if (btn) btn.addEventListener("click", guardarMateria);
-
-const btnModificar = document.getElementById("Modificar");
-if (btnModificar) btnModificar.addEventListener("click", modificarMateria);
-
-const btnEliminar = document.getElementById("Eliminar");
-if (btnEliminar) btnEliminar.addEventListener("click", eliminarMateria);
-
 // Ejecutar al cargar la página
+nombreMateria.value = '';
+desactivarBotones();
 window.onload = cargarMaterias;
