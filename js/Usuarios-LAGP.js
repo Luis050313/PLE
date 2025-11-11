@@ -37,27 +37,12 @@ btn.addEventListener('click', (e) => {
   contraseña.type = isText ? 'password' : 'text';
   btn.setAttribute('aria-pressed', String(!isText));
   btn.title = isText ? 'Mostrar contraseña' : 'Ocultar contraseña';
+  contraseña.placeholder = isText ? 'Contraseña Oculta' : 'Contraseña Visible';
 });
 
 //Selección de fila
 let fila = null;
 let seleccionado = false;
-
-function alModificar(){
-  btnModificar.disabled = true;
-  if(seleccionado && validar()){
-    btnModificar.disabled = false;
-    btnEliminar.disabled = true;
-  }
-}
-[numeroControl, nombre, paterno, materno, contraseña].forEach(elemento => { //Conjunto de acciones que ocurren al querer modificar Campos
-    elemento.addEventListener('input', () => {
-      alModificar();
-    });
-});
-comboCarreras.addEventListener('change', ()=>{ //Conjunto de acciones que ocurren al querer modificar Combobox
-  alModificar();
-});
 
 function alSeleccionar() {
   //Deshabilitar botones
@@ -173,6 +158,7 @@ function desplegarTabla(){
 function validar(){
   //Desactivar botón Guardar
   btnGuardar.disabled = true;
+  btnModificar.disabled = true;
   //Validar campos
   if(ComboTipoRegistro.value !== '2' && numeroControl.value.length === 4){
     console.log("Es docente o auxiliar con NC correcto");
@@ -187,11 +173,14 @@ function validar(){
     return false;
   }
 
-  if(nombre.checkValidity()){}  else{ return false; }
-  if(paterno.checkValidity()){} else{ return false; }
-  if(materno.checkValidity()){} else{ return false; }
+  if(!nombre.checkValidity()){ return false;} 
+  if(!paterno.checkValidity()){ return false;}
+  if(!materno.checkValidity()){ return false;}
+
   //Para reusar el método con la función modificar
   if(seleccionado){
+    btnModificar.disabled = false;
+    btnEliminar.disabled = true;
     return true;
   }
   if(ComboTipoRegistro.value === '3' || contraseña.value !== ''){

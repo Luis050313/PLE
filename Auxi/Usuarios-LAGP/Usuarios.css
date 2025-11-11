@@ -22,16 +22,21 @@ input, select{
 #clave{
     display: flex;
     flex-direction: row;
+    gap: 5px;
 }
 #clave button{
     background: none;
     border: none;
     box-shadow: none;
-    width: 9%;
+    width: 10%;
+    padding: 0%;
 }
-#clave svg path{
-    width: 100%;
+#clave svg{
+    width: 90%;
     fill: black;
+}
+#clave button:hover{
+    transform: none;
 }
 #clave :hover svg path{
     fill: rgb(214, 16, 16);
@@ -48,33 +53,4 @@ span{
 }
 th{
     width: 25%;
-}
-/*Celulares*/
-/* Media query para pantallas muy pequeñas */
-@media (max-width: 480px) {
-    #AreaTrabajo {
-        margin: 5vh 3vw;
-        padding: 1.5rem;
-    }
-    #Encabezado img {
-        height: 3.5rem;
-    }
-    #Botones{
-        gap: 0.3rem;
-    }
-    input, button {
-        width: 90%;
-    }
-    h1 {
-        font-size: 1.8rem;
-    }
-    span {
-        font-size: 1rem;
-    }
-    #home{
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 6%;
-}
 }
