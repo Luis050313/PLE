@@ -47,7 +47,7 @@ if($checkPersona->num_rows == 0 && ($checkProfesor === false || $checkProfesor->
             echo "Guardado correctamente ✅";
         } else if($id == 3){ // Profesor
             $stmt = $conn->prepare("INSERT INTO Profesores (id_Profesor, id_Estado, nombre, apellidoPaterno, apellidoMaterno) VALUES (?, 1, ?, ?, ?)");
-            $stmt->bind_param("issss", $numeroControl, $nombre, $apellidoPaterno, $apellidoMaterno);
+            $stmt->bind_param("isss", $numeroControl, $nombre, $apellidoPaterno, $apellidoMaterno);
             $stmt->execute();
             echo "Guardado correctamente ✅";
         } else{

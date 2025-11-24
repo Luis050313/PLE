@@ -37,7 +37,8 @@ function mostrarConfirmacion(mensaje, func_aceptar = null, func_cancelar = null)
   // Crear la tarjeta del mensaje
   const cuerpo = document.createElement("div");
   cuerpo.className = `cuerpo-Mensaje`;
-  cuerpo.textContent = mensaje;
+  const mensajeHTML = mensaje.replace(/\n/g, "<br>");
+  cuerpo.innerHTML = mensajeHTML;
 
   //Contenedor de botones
   const botones = document.createElement("div")

@@ -212,7 +212,6 @@ function buscarCarrera(numeroControl) {
 }
 
 function guardar(){
-  //Ya validados guardarlos en variables
   const ncontrol = numeroControl.value.trim();
   const name = nombre.value.trim();
   const lastname = paterno.value.trim();
@@ -220,26 +219,55 @@ function guardar(){
   const career = comboCarreras.value.trim();
   const password = contraseña.value.trim();
 
-  fetch("../../php/Usuarios-LAGP/Guardar.php", {
+  // Primero validar si ya existen personas/profesores con ese nombre y apellidos
+  fetch("../../php/Usuarios-LAGP/ValidarExistente.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "id=" + encodeURIComponent(ComboTipoRegistro.value) +
-            "&numeroControl=" + encodeURIComponent(ncontrol) + 
-            "&nombre=" + encodeURIComponent(name) + 
-            "&apellidoPaterno=" + encodeURIComponent(lastname) + 
-            "&apellidoMaterno=" + encodeURIComponent(lastname2) + 
-            "&carrera=" + encodeURIComponent(career)+
-            "&clave=" + encodeURIComponent(password)
+      body: "nombre=" + encodeURIComponent(name) +
+            "&apellidoPaterno=" + encodeURIComponent(lastname) +
+            "&apellidoMaterno=" + encodeURIComponent(lastname2)
   })
-  .then(response => response.text())
+  .then(response => response.json())
   .then(data => {
-      mostrarMensaje(data);
-      //Limpiar campos
-      limpiarCampos();
-      desactivarBotones();
-      desplegarTabla(); //Recarga la tabla automáticamente
+      if(data.length === 0){
+          // No existe → guardar normalmente
+          ejecutarGuardado(ncontrol, name, lastname, lastname2, career, password);
+      } else {
+          // Existen coincidencias → mostrar confirmación con tu modal
+          const numeros = data.map(d => d.id).join(", ");
+          const mensaje = `⚠️ Ya existen personas con ese nombre con número de control: ${numeros}\n¿Deseas continuar y guardar de todos modos?`;
+
+          mostrarConfirmacion(
+              mensaje,
+              () => { ejecutarGuardado(ncontrol, name, lastname, lastname2, career, password); },
+              () => { mostrarMensaje("❌ Operación cancelada"); }
+          );
+      }
   })
-  .catch(error => console.error("Error:", error));  
+  .catch(error => console.error("Error al validar existencia:", error));
+}
+
+// Función separada para el guardado real
+function ejecutarGuardado(ncontrol, name, lastname, lastname2, career, password){
+    fetch("../../php/Usuarios-LAGP/Guardar.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "id=" + encodeURIComponent(ComboTipoRegistro.value) +
+              "&numeroControl=" + encodeURIComponent(ncontrol) + 
+              "&nombre=" + encodeURIComponent(name) + 
+              "&apellidoPaterno=" + encodeURIComponent(lastname) + 
+              "&apellidoMaterno=" + encodeURIComponent(lastname2) + 
+              "&carrera=" + encodeURIComponent(career)+
+              "&clave=" + encodeURIComponent(password)
+    })
+    .then(response => response.text())
+    .then(data => {
+        mostrarMensaje(data);
+        limpiarCampos();
+        desactivarBotones();
+        desplegarTabla();
+    })
+    .catch(error => console.error("Error al guardar:", error));  
 }
 
 function modificar() {
