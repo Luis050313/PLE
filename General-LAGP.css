@@ -18,7 +18,7 @@ body{
     background-color: white;
     display: flex;
     flex-direction: column;
-    padding: 3rem;
+    padding: 3rem 3rem 1rem 3rem;
     border-radius: 2rem;
     backdrop-filter: blur(12px);
     box-shadow: 0 15px 40px rgba(0,0,0,0.35);
@@ -145,42 +145,31 @@ span{
     font-weight: 600;
 }
 /*regreso*/
-footer{
+#Cont-Regreso{
     display: flex;
     justify-content: flex-end; 
     align-items: center;
-    gap: 0.5rem; 
-    height: 3rem;
-    margin: 1rem;
-    padding-right: 2.8rem;
 }
-footer button {
-  background: #ffffff;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 3rem;
-  width: 3rem;
-  transition: all 0.4s ease;
-  padding: 0;
-}
-
-footer button:hover {
+#btn-regreso {
+    all: revert;                  /*Ignora todos los generales*/
     background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3.5rem;
+    width: 3.5rem;
+    border: none;
+    transition: transform 0.3s ease;
 }
 
-footer button svg {
-  width: 60%;
+#btn-regreso:hover{
+    transform: scale(1.14);
 }
 
-footer button svg path {
-  fill: #7a0000;
-  transition: fill 0.3s;
+#btn-regreso svg{
+    fill: #7a0000
 }
 
-footer button:hover svg path {
-  fill: rgb(214, 16, 16);
+#btn-regreso:hover svg{
+    fill: #d51818;
 }
-
-
