@@ -270,7 +270,7 @@ function ejecutarGuardado(ncontrol, name, lastname, lastname2, career, password)
     .catch(error => console.error("Error al guardar:", error));  
 }
 
-function modificar() {
+function modificar(){
   const ncontrol = numeroControl.value.trim();
   const name = nombre.value.trim();
   const lastname = paterno.value.trim();
@@ -278,6 +278,36 @@ function modificar() {
   const career = comboCarreras.value.trim();
   const tipo = ComboTipoRegistro.value;
   const pass = contraseña.value.trim();
+
+  // Primero validar si ya existen personas/profesores con ese nombre y apellidos
+  fetch("../../php/Usuarios-LAGP/ValidarExistente.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "nombre=" + encodeURIComponent(name) +
+            "&apellidoPaterno=" + encodeURIComponent(lastname) +
+            "&apellidoMaterno=" + encodeURIComponent(lastname2)
+  })
+  .then(response => response.json())
+  .then(data => {
+      if(data.length === 0){
+          // No existe → guardar normalmente
+          ejecutarModificar(ncontrol, name, lastname, lastname2, career, tipo, pass);
+      } else {
+          // Existen coincidencias → mostrar confirmación con tu modal
+          const numeros = data.map(d => d.id).join(", ");
+          const mensaje = `⚠️ Ya existen personas con ese nombre con número de control: ${numeros}\n¿Deseas continuar y guardar de todos modos?`;
+
+          mostrarConfirmacion(
+              mensaje,
+              () => { ejecutarModificar(ncontrol, name, lastname, lastname2, career, tipo, pass); },
+              () => { mostrarMensaje("❌ Operación cancelada"); }
+          );
+      }
+  })
+  .catch(error => console.error("Error al validar existencia:", error));
+}
+
+function ejecutarModificar(ncontrol, name, lastname, lastname2, career, tipo, pass) {
 
   fetch("../../php/Usuarios-LAGP/Modificar.php", {
     method: "POST",
