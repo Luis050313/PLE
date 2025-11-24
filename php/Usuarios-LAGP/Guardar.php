@@ -12,13 +12,20 @@ $clave           = $conn->real_escape_string($_POST['clave'] ?? '');
 //
 // 1) Buscar si existe en PERSONAS
 //
-$checkPersona = $conn->query("SELECT id_Estado FROM personas WHERE numeroControl = '$numeroControl'");
+$stmt = $conn->prepare("SELECT id_Estado FROM personas WHERE numeroControl = ?");
+$stmt->bind_param("s", $numeroControl);
+$stmt->execute();
+$checkPersona = $stmt->get_result();
+
 
 //
 // 2) Buscar si existe en PROFESORES (solo si no está en personas)
 //
 if($checkPersona->num_rows == 0){
-    $checkProfesor = $conn->query("SELECT id_Estado FROM profesores WHERE id_profesor = '$numeroControl'");
+    $stmt = $conn->prepare("SELECT id_Estado FROM profesores WHERE id_profesor = ?");
+    $stmt->bind_param("s", $numeroControl);
+    $stmt->execute();
+    $checkProfesor = $stmt->get_result();
 } else {
     $checkProfesor = false;
 }
@@ -30,8 +37,9 @@ if($checkPersona->num_rows == 0 && ($checkProfesor === false || $checkProfesor->
 
     try{
         if($id == 1 || $id == 2){ // Auxiliar o Alumno
-            $conn->query("INSERT INTO personas (numeroControl, id_Rol, id_Estado, nombre, apellidoPaterno, apellidoMaterno)
-                           VALUES ('$numeroControl','$id',1,'$nombre','$apellidoPaterno','$apellidoMaterno')");
+            $stmt = $conn->prepare(" INSERT INTO personas (numeroControl, id_Rol, id_Estado, nombre, apellidoPaterno, apellidoMaterno) VALUES (?, ?, 1, ?, ?, ?)");
+            $stmt->bind_param("sisss", $numeroControl, $id, $nombre, $apellidoPaterno, $apellidoMaterno);
+            $stmt->execute();
 
             $hash = password_hash($clave, PASSWORD_DEFAULT);
             $stmt = $conn->prepare("INSERT INTO usuarios (id_Estado, numeroControl, Clave) VALUES ('1',?,?)");
@@ -39,11 +47,14 @@ if($checkPersona->num_rows == 0 && ($checkProfesor === false || $checkProfesor->
             $stmt->execute();
 
             if($id == 2){
-                $conn->query("INSERT INTO CarrerasAlumnos (numeroControl, id_Carrera) VALUES ('$numeroControl','$carrera')");
+                $stmt = $conn->prepare("INSERT INTO CarrerasAlumnos (numeroControl, id_Carrera) VALUES (?, ?)");
+                $stmt->bind_param("si", $numeroControl, $carrera);
+                $stmt->execute();
             }
         } elseif($id == 3){ // Profesor
-            $conn->query("INSERT INTO Profesores (id_Profesor, id_Estado, nombre, apellidoPaterno, apellidoMaterno)
-                           VALUES ('$numeroControl',1,'$nombre','$apellidoPaterno','$apellidoMaterno')");
+            $stmt = $conn->prepare("INSERT INTO Profesores (id_Profesor, id_Estado, nombre, apellidoPaterno, apellidoMaterno) VALUES (?, 1, ?, ?, ?)");
+            $stmt->bind_param("issss", $numeroControl, $nombre, $apellidoPaterno, $apellidoMaterno);
+            $stmt->execute();
         }
 
         echo "Guardado correctamente ✅";
