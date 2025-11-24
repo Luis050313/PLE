@@ -2,7 +2,7 @@
 header('Content-Type: application/json'); // Le decimos que devolverá JSON
 include("../conexion.php"); // Archivo donde se conecta a la BD
 
-$sql = "SELECT nombre FROM materias";
+$sql = "SELECT nombre FROM materias where id_estado = 1";
 $result = $conn->query($sql);
 
 $materias = [];

@@ -37,7 +37,7 @@ btn.addEventListener('click', (e) => {
   contraseña.type = isText ? 'password' : 'text';
   btn.setAttribute('aria-pressed', String(!isText));
   btn.title = isText ? 'Mostrar contraseña' : 'Ocultar contraseña';
-  contraseña.placeholder = isText ? 'Contraseña Oculta' : 'Contraseña Visible';
+  contraseña.placeholder = isText ? 'Oculto' : 'Visible';
 });
 
 //Selección de fila
