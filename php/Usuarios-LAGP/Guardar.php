@@ -9,18 +9,13 @@ $apellidoMaterno = $conn->real_escape_string($_POST['apellidoMaterno'] ?? '');
 $carrera         = $conn->real_escape_string($_POST['carrera'] ?? '');
 $clave           = $conn->real_escape_string($_POST['clave'] ?? '');
 
-//
-// 1) Buscar si existe en PERSONAS
-//
+//Buscar si existe en PERSONAS
 $stmt = $conn->prepare("SELECT id_Estado FROM personas WHERE numeroControl = ?");
 $stmt->bind_param("s", $numeroControl);
 $stmt->execute();
 $checkPersona = $stmt->get_result();
 
-
-//
-// 2) Buscar si existe en PROFESORES (solo si no está en personas)
-//
+//Buscar si existe en PROFESORES (solo si no está en personas)
 if($checkPersona->num_rows == 0){
     $stmt = $conn->prepare("SELECT id_Estado FROM profesores WHERE id_profesor = ?");
     $stmt->bind_param("s", $numeroControl);
@@ -30,9 +25,7 @@ if($checkPersona->num_rows == 0){
     $checkProfesor = false;
 }
 
-//
 // Si no existe en ninguna tabla → Insert
-//
 if($checkPersona->num_rows == 0 && ($checkProfesor === false || $checkProfesor->num_rows == 0)){
 
     try{
@@ -51,14 +44,15 @@ if($checkPersona->num_rows == 0 && ($checkProfesor === false || $checkProfesor->
                 $stmt->bind_param("si", $numeroControl, $carrera);
                 $stmt->execute();
             }
-        } elseif($id == 3){ // Profesor
+            echo "Guardado correctamente ✅";
+        } else if($id == 3){ // Profesor
             $stmt = $conn->prepare("INSERT INTO Profesores (id_Profesor, id_Estado, nombre, apellidoPaterno, apellidoMaterno) VALUES (?, 1, ?, ?, ?)");
             $stmt->bind_param("issss", $numeroControl, $nombre, $apellidoPaterno, $apellidoMaterno);
             $stmt->execute();
+            echo "Guardado correctamente ✅";
+        } else{
+            echo "Error al guardar ❌";
         }
-
-        echo "Guardado correctamente ✅";
-
     } catch (mysqli_sql_exception $e){
         echo "⚠️ Error al guardar: " . $e->getMessage();
     }
@@ -67,9 +61,7 @@ if($checkPersona->num_rows == 0 && ($checkProfesor === false || $checkProfesor->
     exit;
 }
 
-//
 // Si existe → validamos id_estado
-//
 if($checkPersona->num_rows > 0){
     $row = $checkPersona->fetch_assoc();
 } else {
